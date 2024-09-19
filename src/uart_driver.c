@@ -1,6 +1,5 @@
 #include "uart_driver.h"
 #include <avr/io.h>
-#include <avr/iom162.h>
 #include <avr/interrupt.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -49,10 +48,11 @@ int put_char(char data, FILE *stream){
 	/* Wait for empty transmit buffer */
 	while ( !( UCSR0A & (1<<UDRE0)) ){};
 	/* Put data into buffer, sends the data */
+	UDR0 = data;
 	if (data == '\n'){
 		put_char('\r', stream);
 	}
-	UDR0 = data;
+	
 	return 0;
 }
 

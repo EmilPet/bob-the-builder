@@ -6,18 +6,28 @@
  */ 
 
 #include "uart_driver.h"
-#include "sram_test.h"
+#include "sram.h"
+#include "joystick_driver.h"
 #include <avr/io.h>
-
+#include <util/delay.h>
 
 
 int main(void)
 {
 	unsigned int baud_rate = 9600;
-	
+	joystick joystick;
+	uint8_t slider;
+
 	Uart_init(baud_rate);
 	SRAM_init();
-	
+	while (1){
+		joystick = get_joystick(joystick);
+		printf("x: %i  y: %i  direction: %i \n", joystick.x, joystick.y, joystick.direction);
+		//get_slider(slider);
+		//printf("Slider: \n x = %i \n", slider);
+		_delay_ms(100);
+	}
+
 	/*while (1)
 	{
 		_delay_ms(1000);

@@ -40,8 +40,6 @@ void get_adc(uint8_t* adc_input){
 joystick get_joystick(joystick joystick){
     uint8_t adc_input[4];
     get_adc(adc_input);
-/*     uint8_t x = adc_input[0]; 
-    uint8_t y = adc_input[1]; */
     uint8_t y = map(adc_input[0], 0, 255, 0, 100); 
     uint8_t x = map(adc_input[1], 0, 255, 0, 100);
     joystick.x = x;
@@ -64,15 +62,17 @@ joystick get_joystick(joystick joystick){
     else{
         joystick.direction = NEUTRAL;
     }
-        
-    /* joystick[0] = x;
-    joystick[1] = y; */
     return joystick;
 }
 
-void get_slider(uint8_t* slider){
+slider get_slider(slider slider){
     uint8_t adc_input[4];
     get_adc(adc_input);
-    uint8_t x = map(adc_input[2], 0, 255, 0, 100); 
-    slider[0] = x;
+    uint8_t left = map(adc_input[2], 0, 255, 0, 100);
+    uint8_t right = map(adc_input[3], 0, 255, 0, 100);
+    slider.left = left;
+    slider.right = right;
+    return slider;
 }
+
+//TODO(ELP): add get_button function (Left = 4 Right = 5)

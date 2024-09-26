@@ -12,12 +12,18 @@ typedef struct
     enum Direction direction;
 }joystick;
 
+typedef struct
+{
+    uint8_t left;
+    uint8_t right;
+} slider;
+
 
 void adc_write ( uint8_t data , uint16_t addr );
 uint8_t adc_read ( uint16_t addr );
 void get_adc(uint8_t* adc_input); 
 joystick get_joystick(joystick joystick);
-void get_slider(uint8_t* slider);
+slider get_slider(slider slider);
 
 
 

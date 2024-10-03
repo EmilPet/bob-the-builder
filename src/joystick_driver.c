@@ -37,14 +37,16 @@ void get_adc(uint8_t* adc_input){
 
 
 
-joystick get_joystick(joystick joystick){
+joystick get_joystick(){
+    joystick joystick;
     uint8_t adc_input[4];
     get_adc(adc_input);
     uint8_t y = map(adc_input[0], 0, 255, 0, 100); 
     uint8_t x = map(adc_input[1], 0, 255, 0, 100);
     joystick.x = x;
-    joystick.y = y;    
-    uint8_t dead_zone = 20;
+    joystick.y = y;
+    
+    uint8_t dead_zone = 30;
     uint8_t x_0 = 50;
     uint8_t y_0 = 50;
     if( y > x && y > y_0 + dead_zone){

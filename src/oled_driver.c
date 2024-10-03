@@ -48,9 +48,9 @@ void oled_init()
     oled_cmd_write(0b10); // Page mode for scroll
 }
 
-int oled_goto_columb(int columb){
-	int row_MSB = columb / 16;
-	int row_LSB = columb % 16;
+int oled_goto_column(int column){
+	int row_MSB = column / 16;
+	int row_LSB = column % 16;
 
 	oled_cmd_write(0x00 + row_LSB);  //velge en rad fra 0-127 med binærtall. 4 LSB her og 4 msb under
 	oled_cmd_write(0x10 + row_MSB);
@@ -64,9 +64,9 @@ int oled_goto_row(int row){
 }
 
 void oled_clear(){
-    oled_goto_columb(0);
+    oled_goto_column(0);
     for (int row = 0; row < 8; row++){
-        for (int columb = 0; columb < 128; columb++){
+        for (int column = 0; column < 128; column++){
             oled_goto_row(row);
             oled_data_write(0b00000000);
 			}
@@ -79,14 +79,37 @@ void oled_write_char(char asci_index){
         oled_data_write(pgm_read_byte(&font8[asci_index - 32][i]));
     }
 }
+void oled_write_char_invert(char asci_index){
+    for(int i; i<8; i++){
+        int data = pgm_read_byte(&font8[asci_index - 32][i]);
+        int inverted = ~data;
+        oled_data_write(inverted);
+    }
+}
+
 
 void oled_write_center_text(char* input_string){
     int center = (127 - strlen(input_string)*8)/2;
-    oled_goto_columb(center);
+    oled_goto_column(center);
     for(int i=0; i<strlen(input_string); i++){
         oled_write_char(input_string[i]);
     }
 }
+void oled_write_center_text_inverted(char* input_string, int border){
+    int center = (127 - strlen(input_string)*8)/2;
+    oled_goto_column(center - border);
+    for (int i = 0; i < border; i++){
+        oled_data_write(0xFF);
+    }
+    for(int i=0; i<strlen(input_string); i++){
+        oled_write_char_invert(input_string[i]);
+    }
+    for (int i = 0; i < border; i++){
+        oled_data_write(0xFF);
+    }
+}
+
+
 void oled_write(char* input_string){
     for(int i=0; i<strlen(input_string); i++){
         oled_write_char(input_string[i]);
@@ -94,5 +117,46 @@ void oled_write(char* input_string){
 }
 void oled_pos(int row, int collum){
     oled_goto_row(row);
-    oled_goto_columb(collum);
+    oled_goto_column(collum);
+}
+
+void update_menu(int current_menu, int joystick_input){
+	oled_clear();
+	oled_goto_row(1);
+
+	const char **selected_menu = NULL;
+	
+	switch (current_menu){
+		case 0: // Main Menu
+			oled_write_center_text("MAIN MENU");
+			selected_menu = (const char *[]){"Settings", "Play", "Quit"};
+			break;
+
+		case 1: // Play Menu
+			oled_write_center_text("PLAY MENU");
+			selected_menu = (const char *[]){"*<]:^D", "Coming Soon", "Return"};
+			break;
+
+		case 2: // Settings Menu
+			oled_write_center_text("SETTINGS MENU");
+			selected_menu = (const char *[]){"UwU", "OwO", "Return"};
+			break;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		oled_goto_row(i + 2);
+		int current_item = (i + joystick_input) % 3;
+		if (i == 1)
+		{
+			oled_write_center_text_inverted(selected_menu[current_item], 10);
+		}
+		else
+		{
+			oled_write_center_text(selected_menu[current_item]);
+		}
+	}
+
+	
+	_delay_ms(700);
 }

@@ -1,6 +1,6 @@
 #ifndef JOYSTICK_DRIVER_H
 #define JOYSTICK_DRIVER_H
-
+#define F_CPU 4915200 // Clock 
 #include <avr/io.h>
 #include <stdio.h>
 
@@ -22,7 +22,7 @@ typedef struct
 void adc_write ( uint8_t data , uint16_t addr );
 uint8_t adc_read ( uint16_t addr );
 void get_adc(uint8_t* adc_input); 
-joystick get_joystick(joystick joystick);
+joystick get_joystick();
 slider get_slider(slider slider);
 
 

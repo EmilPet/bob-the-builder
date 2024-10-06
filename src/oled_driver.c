@@ -75,12 +75,12 @@ void oled_clear(){
 
 
 void oled_write_char(char asci_index){
-    for(int i; i<8; i++){
+    for(int i = 0; i<8; i++){
         oled_data_write(pgm_read_byte(&font8[asci_index - 32][i]));
     }
 }
 void oled_write_char_invert(char asci_index){
-    for(int i; i<8; i++){
+    for(int i = 0; i<8; i++){
         int data = pgm_read_byte(&font8[asci_index - 32][i]);
         int inverted = ~data;
         oled_data_write(inverted);

@@ -46,7 +46,11 @@ int main(void)
 
 
 	update_menu(current_menu, joystick_input);
-	while (1)
+	oled_draw_line_horisontal(0,50,10,1);
+	oled_draw_line_horisontal(0,5,10,1);
+
+
+	while (0)
 	{
 		joystick = get_joystick();
 

@@ -120,6 +120,28 @@ void oled_pos(int row, int collum){
     oled_goto_column(collum);
 }
 
+void oled_draw_line_horisontal(int start,int end,int start_height, int width) {
+    int length = end-start;
+    
+    int row = start_height / 8; // Position in the 8-pixel row  
+    uint8_t row_pixel = ((1 << width) - 1) << (7 - start_height % 7);
+    
+    oled_pos(row, start);
+    for (int i = 0; i <= length; i++){
+        oled_data_write(row_pixel);
+    }  
+}
+void oled_draw_line_vertical(int start_row,int end_row,int collum, int width) {
+    int length = end_row - start_row;
+    
+    for (int i = 0; i <= length; i++){
+        oled_pos(start_row + i, collum);
+        for (int i = 0; i < width; i++){
+            oled_data_write(0b11111111);
+        }
+    }  
+}
+
 void update_menu(int current_menu, int joystick_input){
 	oled_clear();
 	oled_goto_row(1);

@@ -60,7 +60,7 @@ int oled_goto_row(int row){
     if (row > 7){
         row = 7;
     }
-    oled_cmd_write(0xB0 + row); // row is from 0-7
+    oled_cmd_write(0xB0 + row); // row is from 0-7 :)
 }
 
 void oled_clear(){

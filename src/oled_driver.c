@@ -1,4 +1,5 @@
 #include "oled_driver.h"
+#include "joystick_driver.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -159,4 +160,50 @@ void update_menu(int current_menu, int joystick_input){
 
 	
 	_delay_ms(700);
+}
+
+void menu_loop(){
+    update_menu(current_menu, joystick_input);
+	while (1)
+	{
+		joystick = get_joystick();
+
+		if (joystick.direction == UP)
+		{
+			joystick_input -= 1;
+			update_menu(current_menu, joystick_input);
+		}
+		else if (joystick.direction == DOWN)
+		{
+			joystick_input += 1;
+			update_menu(current_menu, joystick_input);
+		}
+
+		if (button_pressed())
+		{
+			while (button_pressed()){}
+			selected_menuitem = (joystick_input + 1) % 3;
+			if(current_menu == 0){
+				if(selected_menuitem == 0){
+					current_menu = 1;
+				}
+				if(selected_menuitem == 1){
+					current_menu = 2;
+				}
+			}
+			if(current_menu == 1){
+				if(selected_menuitem == 2){
+					current_menu = 0;
+				}
+			}
+			if(current_menu == 2){
+				if(selected_menuitem == 2){
+					current_menu = 0;
+				}
+			}
+			
+
+			update_menu(current_menu, joystick_input);
+		}
+	}
 }

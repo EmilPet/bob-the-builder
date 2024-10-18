@@ -42,8 +42,8 @@ int main(void)
 	port_init();
 	Uart_init(baud_rate);
 	SRAM_init();
-	oled_init();
-	oled_clear();
+	//oled_init();
+	//oled_clear();
 	mcp_Init();	
 	sei();
 	printf("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_\n");
@@ -59,7 +59,7 @@ int main(void)
 		_delay_ms(1000);
 	}
 	
-	menu_loop();
+	//menu_loop();
 	
 }
 

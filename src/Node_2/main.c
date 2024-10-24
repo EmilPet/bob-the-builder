@@ -22,7 +22,14 @@ int main()
     uint32_t cpu_freq = 84000000;
     SystemInit();
     uart_init(cpu_freq, baudrate);
-    can_init();
+    
+    CanInit canObj;
+    
+    // TQ is set up to be 800ns
+    // Propagation delay = 6 TQ
+    // Phase 1 = 5 TQ
+    // Phase 2 = 2 TQs
+    can_init((CanInit){.brp = 20, .phase1 = 2, .phase2 = 1, .propag = 3}, 0);
     
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
     // Set clock
@@ -31,26 +38,25 @@ int main()
     // Set pin as output
     PIOB->PIO_PER = PIO_PB13;
     PIOB->PIO_OER = PIO_PB13;
-/*     PIOB->PIO_IFDR = PIO_PB13;
+/*  PIOB->PIO_IFDR = PIO_PB13;
     PIOB->PIO_IDR = PIO_PB13;
     PIOB->PIO_MDDR = PIO_PB13;
     PIOB->PIO_PUDR = PIO_PB13;
     PIOB->PIO_OWDR = PIO_PB13; */
-
+ 
     //Uncomment after including uart above
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
 
-
-
+    CanMsg can_msg;
+    printf("waiting for CAN message\r\n");
     while (1)
     {
         // todo sug en feit en -EP
-        printf("HELLOo, I'm under the water \n\r    pls help <>< .oO \n\r");
-        PIOB->PIO_SODR = PIO_PB13;
-        time_spinFor(msecs(1000));
-        PIOB->PIO_CODR = PIO_PB13; 
-        time_spinFor(msecs(1000));
-    }
-    
+        uint8_t success = can_rx(&can_msg);
+        if (success){
+            can_printmsg(can_msg);
+            time_spinFor(msecs(1000));
+        }
+    }  
 }

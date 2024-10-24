@@ -57,7 +57,8 @@ struct Byte8 {
 //        uint8_t   b;
 //        float     c;
 //    } __attribute__((packed)) YourStruct ;
-//    
+//    t can_rx(CanMsg* m);
+
 //    CanMsg m = (CanMsg){
 //        .id = 1,
 //        .length = sizeof(YourStruct),

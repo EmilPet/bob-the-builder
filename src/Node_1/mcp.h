@@ -4,7 +4,7 @@
 
 
 enum MCP_COMMANDS {
-	MCP_RESET =    0b11000000,
+	MCP_RESET =    0xC0,
 	MCP_READ =     0b00000011,
 	MCP_READ_RX0 = 0b10010000, // bit 1-2 determine(0-indexed)
 	MCP_READ_RX1 = 0b10010010,
@@ -32,8 +32,12 @@ enum MCP_REGS {
 	// Other Control
 	CANINTE		= 0x2B,
 	CANINTF		= 0x2C,
-	CANSTAT		= 0xEE,
+	CANSTAT		= 0x0E,
 	CANCTRL		= 0xFF,
+	CNF1		= 0x2A,
+	CNF2		= 0x29,
+	CNF3		= 0x28,
+	EFLG		= 0x2D,
 		
 	// RX Buffers
 	RXB0CTRL	= 0x60,
@@ -42,17 +46,38 @@ enum MCP_REGS {
 	RXB0DLC		= 0x65,
 	RXB0D0		= 0x66,
 	
+	RXB1CTRL	= 0x70,
+	RXB1SIDH	= 0x71,
+	RXB1SIDL	= 0x72,
+	RXB1DLC		= 0x75,
+	RXB1D0		= 0x76,
+	
 	// Filters
 	RXF0SIDH	= 0x00,
 	RXF0SIDL	= 0x01,
 	RXF1SIDH	= 0x04,
 	RXF1SIDL	= 0x05,
+	RXF2SIDH	= 0x08,
+	RXF2SIDL	= 0x09,
+	RXF3SIDH	= 0x10,
+	RXF3SIDL	= 0x11,
+	RXF4SIDH	= 0x14,
+	RXF4SIDL	= 0x15,
+	RXF5SIDH	= 0x18,
+	RXF5SIDL	= 0x19,
 	
 	// Masks
 	RXM0SIDH	= 0x20,
-	RXM0SIDL	= 0x21
+	RXM0SIDL	= 0x21,
+	RXM1SIDH	= 0x24,
+	RXM1SIDL	= 0x25
 	
 };
+
+enum div {
+	CAN_MODE_MASK	= 0xE0,
+	CAN_MODE_CONFIG = 0x80
+	};
 
 uint8_t mcp_read(uint8_t address);
 void mcp_write(uint8_t address, uint8_t data);

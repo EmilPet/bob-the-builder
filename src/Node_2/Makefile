@@ -10,7 +10,8 @@ SOURCE_FILES = \
 	main.c \
 	time.c \
 	uart.c \
-	can.c 
+	can.c \
+	servo.c 
 #   filename1.c \
 #   filename2.c \
 #	filenameN.c

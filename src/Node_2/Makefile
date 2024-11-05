@@ -11,7 +11,8 @@ SOURCE_FILES = \
 	time.c \
 	uart.c \
 	can.c \
-	servo.c 
+	servo.c \
+	irsensor.c 
 #   filename1.c \
 #   filename2.c \
 #	filenameN.c

@@ -5,6 +5,7 @@
 #include "uart.h"
 #include "can.h"
 #include "servo.h"
+#include "irsensor.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -51,15 +52,32 @@ int main()
 
     joystick joystick;
     slider slider;
-    //printf("waiting for CAN message\r\n");
+    int score = 0;
+    // printf("waiting for CAN message\r\n");
     printf("\033[2J");
+    printf("target initialized\r\n");
     pwm_init();
+    adc_init();
+    
 
     while (1)
     {
-        //can_decipher_msg(&joystick, &slider);
+        can_decipher_msg(&joystick, &slider);
+        //update_servo(slider.left);
+
+        get_irsensor(&score);
+
+        printf("score: %i\n\r", score);
+
+        time_spinFor(msecs(10));
+
         //printf("\033[H");
         //printf("joystick        \n\rx: %i   \n\ry: %i       \n\rdir: %i     \n\rslider      \n\rleft: %i        \n\rright: %i      ", joystick.x, joystick.y, joystick.direction, slider.left, slider.right);
-        //time_spinFor(msecs(10));
+       // update_servo(140);
+        //time_spinFor(msecs(500));
+        
+        //update_servo(40);
+        //time_spinFor(msecs(500));
+
     }
 }

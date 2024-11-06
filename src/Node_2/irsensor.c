@@ -20,6 +20,8 @@ void adc_init(){
 }
 
 void get_irsensor(int* score){
+    int ball_detected_flag = 0;
+    
     while(!(ADC->ADC_ISR&ADC_ISR_DRDY)){
         printf("ISR: %x\r\n", ADC->ADC_ISR);
         time_spinFor(msecs(100));
@@ -28,6 +30,12 @@ void get_irsensor(int* score){
     //int data_2 = ADC->ADC_CDR[13];
     //printf("ir sensor: %i \n\r",data);
     if(data < 1000){
-        score += 1;
+        if(!ball_detected_flag){
+        (*score) += 1;
+        ball_detected_flag = 1;
+        }
+    }
+    else{
+        ball_detected_flag = 0;
     }
 }

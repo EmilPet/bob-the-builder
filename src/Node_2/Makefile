@@ -12,7 +12,8 @@ SOURCE_FILES = \
 	uart.c \
 	can.c \
 	servo.c \
-	irsensor.c 
+	irsensor.c \
+	motor.c
 #   filename1.c \
 #   filename2.c \
 #	filenameN.c

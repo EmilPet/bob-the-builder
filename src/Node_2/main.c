@@ -6,6 +6,7 @@
 #include "can.h"
 #include "servo.h"
 #include "irsensor.h"
+#include "motor.h"
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -52,28 +53,38 @@ int main()
 
     joystick joystick;
     slider slider;
+    int ball_detected_flag = 0;
     int score = 0;
+    int encoder_data = 0;
     // printf("waiting for CAN message\r\n");
     printf("\033[2J");
     printf("target initialized\r\n");
     pwm_init();
     adc_init();
-    
-
+    motor_init();
+    uint64_t lasttime = time_now();
+    uint64_t sec = 100000000;
     while (1)
     {
+    
         can_decipher_msg(&joystick, &slider);
-        //update_servo(slider.left);
+        update_encoder(&encoder_data);
+        update_motor(joystick.x);
+        update_servo(joystick.y);
+        if(time_now() - lasttime > 1*sec){
+            printf("encoder: %i\r\n", encoder_data);
+            lasttime = time_now();
+        }
+        
 
-        get_irsensor(&score);
+    //     get_irsensor(&score, &ball_detected_flag);
 
-        printf("score: %i\n\r", score);
+    //     printf("score: %i\n\r", score);
 
-        time_spinFor(msecs(10));
 
-        //printf("\033[H");
-        //printf("joystick        \n\rx: %i   \n\ry: %i       \n\rdir: %i     \n\rslider      \n\rleft: %i        \n\rright: %i      ", joystick.x, joystick.y, joystick.direction, slider.left, slider.right);
-       // update_servo(140);
+    //     printf("\033[H");
+    //     printf("joystick        \n\rx: %i   \n\ry: %i       \n\rdir: %i     \n\rslider      \n\rleft: %i        \n\rright: %i      \r\n", joystick.x, joystick.y, joystick.direction, slider.left, slider.right);
+    //    // update_servo(140);
         //time_spinFor(msecs(500));
         
         //update_servo(40);

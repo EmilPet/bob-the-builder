@@ -30,22 +30,21 @@ void motor_init(){
     TC2->TC_CHANNEL[0].TC_CMR = TC_CMR_TCCLKS_XC0 | TC_CMR_ETRGEDG_RISING | TC_CMR_ABETRG;
     TC2->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 }
-
-void update_encoder(int* position){
-    *position = map(TC2->TC_CHANNEL[0].TC_CV, 0, 2828, 0, 100);
+int update_encoder(){
+    return map(TC2->TC_CHANNEL[0].TC_CV, 0, 2828, 0, 100);
 }
 
 void update_motor(int motor_input){
     int duty_cycle_percentage;
 
-    if(motor_input > 52){
-        duty_cycle_percentage = map(motor_input, 52, 100, 0, 2000); 
-        PIOC->PIO_SODR = PIO_SODR_P23;   
+    if(motor_input > 2){
+        duty_cycle_percentage = map(motor_input, 0, 100, 400, 2000); 
+        PIOC->PIO_CODR = PIO_SODR_P23;   
     }
-    else if (motor_input < 48)
+    else if (motor_input < -2)
     {
-        duty_cycle_percentage = map(motor_input, 48, 0, 0, 2000);    
-        PIOC->PIO_CODR = PIO_CODR_P23;
+        duty_cycle_percentage = map(motor_input, 0, -100, 400, 2000);    
+        PIOC->PIO_SODR = PIO_CODR_P23;
     }
     else{
         duty_cycle_percentage = 0;
@@ -62,4 +61,18 @@ void update_motor(int motor_input){
         //printf("ERroR: DUTYCYCLE ABOVE THRESHOLD VALUE\r\n");
     }
     PWM->PWM_CH_NUM[0].PWM_CDTY = PWM_CDTYUPD_CDTYUPD(duty_cycle_percentage);
+}
+void calib_encoder(){
+    update_motor(-50);
+    time_spinFor(msecs(500));
+    update_motor(0);
+    time_spinFor(msecs(100));
+    TC2->TC_CHANNEL[0].TC_CCR = TC_CCR_SWTRG;  // Reset TC counter for TC2 Channel 0
+}
+
+int pid_output(controller *pid){
+    float e = pid->r - pid->y;
+    pid->integralterm += pid->Ki * e * pid->dt;
+    pid->u = pid->Kp*e + pid->integralterm;
+    return pid->u;
 }

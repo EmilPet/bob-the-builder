@@ -62,20 +62,37 @@ int main()
     pwm_init();
     adc_init();
     motor_init();
+    calib_encoder();
     uint64_t lasttime = time_now();
+    uint64_t lasttime_pid = time_now();
     uint64_t sec = 100000000;
+    
+    controller pid = {1, 0.1, 0, 0, 0, 0.0, 0.01};
+                    // kp ki r u y integralterm dt;
     while (1)
     {
     
         can_decipher_msg(&joystick, &slider);
-        update_encoder(&encoder_data);
-        update_motor(joystick.x);
+        encoder_data = update_encoder();
         update_servo(joystick.y);
+
         if(time_now() - lasttime > 1*sec){
             printf("encoder: %i\r\n", encoder_data);
+            printf("pid.u: %i\r\n", pid.u);
+            printf("pid.r: %i\r\n", pid.r);
+            printf("pid.y: %i\r\n", pid.y);
+            printf("pid.int: %f\r\n", pid.integralterm);
             lasttime = time_now();
         }
-        
+    if(time_now() - lasttime_pid > pid.dt*sec){
+            pid.y = encoder_data;
+            pid.r = joystick.x;
+            pid.u = pid_output(&pid);
+            update_motor(pid.u);
+            lasttime_pid = time_now();
+        }
+
+
 
     //     get_irsensor(&score, &ball_detected_flag);
 

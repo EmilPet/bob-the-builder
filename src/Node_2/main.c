@@ -65,7 +65,7 @@ int main()
     calib_encoder();
     uint64_t lasttime = time_now();
     uint64_t lasttime_pid = time_now();
-    uint64_t sec = 100000000;
+    uint64_t sec = 100000000; // here is correction for seconds from time()
     
     controller pid = {1, 0.1, 0, 0, 0, 0.0, 0.01};
                     // kp ki r u y integralterm dt;

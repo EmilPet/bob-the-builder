@@ -71,4 +71,4 @@ build/can.o: can.c sam/sam3x/include/sam.h sam/sam3x/include/sam3x8e.h \
  sam/sam3x/include/instance/instance_wdt.h \
  sam/sam3x/include/instance/instance_rtc.h \
  sam/sam3x/include/instance/instance_gpbr.h \
- sam/sam3x/include/pio/pio_sam3x8e.h can.h
+ sam/sam3x/include/pio/pio_sam3x8e.h can.h motor.h

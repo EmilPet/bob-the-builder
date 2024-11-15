@@ -108,6 +108,7 @@ uint8_t can_rx(CanMsg* m);
 void can_printmsg(CanMsg m);
 
 void can_decipher_msg(joystick* joystick, slider* slider);
+void can_i_send_score(int score);
 
 
 

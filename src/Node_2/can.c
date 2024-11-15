@@ -2,6 +2,7 @@
 #include "sam.h"
 #include "can.h"
 #include <stdio.h>
+#include "motor.h"
 
 void can_printmsg(CanMsg msg)
 {
@@ -113,6 +114,14 @@ uint8_t can_rx(CanMsg *msg)
     return 1;
 }
 
+void can_i_send_score(int score){
+    CanMsg msg;
+    msg.id = 4;
+    msg.byte[0] = score;
+    msg.length = 1;
+    can_tx(msg);
+}
+
 void can_decipher_msg(joystick *joystick, slider *slider)
 {
     CanMsg msg;
@@ -120,10 +129,12 @@ void can_decipher_msg(joystick *joystick, slider *slider)
     {
         uint8_t joystick_id = 1;
         uint8_t slider_id = 2;
+        uint8_t button_id = 5;
         
         // printf("id: %i byte 0: %i byte 1: %i byte 2:%i \n\r", msg.id, msg.byte[0], msg.byte[1], msg.byte[2]);
         if (msg.id == joystick_id)
         {
+            //printf("x: %i y: %i\r\n", msg.byte[0], msg.byte[1]);
             joystick->x = msg.byte[0];
             joystick->y = msg.byte[1];
             joystick->direction = msg.byte[2];
@@ -133,6 +144,10 @@ void can_decipher_msg(joystick *joystick, slider *slider)
             slider->left = msg.byte[0];
             slider->right = msg.byte[1];
             //can_printmsg(msg); 
+        }
+        if (msg.id == button_id)
+        {
+            activate_solenoid();
         }
     }
 }

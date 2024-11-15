@@ -29,6 +29,9 @@ void motor_init(){
     // Set XC0 as input clock (må cleare wave bit?)
     TC2->TC_CHANNEL[0].TC_CMR = TC_CMR_TCCLKS_XC0 | TC_CMR_ETRGEDG_RISING | TC_CMR_ABETRG;
     TC2->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
+    PIOB->PIO_PER |= PIO_PER_P25;
+    PIOB->PIO_OER |= PIO_OER_P25;
+    PIOB->PIO_SODR |= PIO_SODR_P25;
 }
 int update_encoder(){
     return map(TC2->TC_CHANNEL[0].TC_CV, 0, 2828, 0, 100);
@@ -39,12 +42,12 @@ void update_motor(int motor_input){
 
     if(motor_input > 2){
         duty_cycle_percentage = map(motor_input, 0, 100, 400, 2000); 
-        PIOC->PIO_CODR = PIO_SODR_P23;   
+        PIOC->PIO_CODR = PIO_CODR_P23;   
     }
     else if (motor_input < -2)
     {
         duty_cycle_percentage = map(motor_input, 0, -100, 400, 2000);    
-        PIOC->PIO_SODR = PIO_CODR_P23;
+        PIOC->PIO_SODR = PIO_SODR_P23;
     }
     else{
         duty_cycle_percentage = 0;
@@ -75,4 +78,10 @@ int pid_output(controller *pid){
     pid->integralterm += pid->Ki * e * pid->dt;
     pid->u = pid->Kp*e + pid->integralterm;
     return pid->u;
+}
+
+void activate_solenoid(){
+    PIOB->PIO_CODR |= PIO_CODR_P25;
+    time_spinFor(msecs(100));
+    PIOB->PIO_SODR |= PIO_SODR_P25;
 }

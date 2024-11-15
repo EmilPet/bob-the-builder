@@ -55,6 +55,7 @@ int main()
     slider slider;
     int ball_detected_flag = 0;
     int score = 0;
+    int last_score = 0;
     int encoder_data = 0;
     // printf("waiting for CAN message\r\n");
     printf("\033[2J");
@@ -66,46 +67,40 @@ int main()
     uint64_t lasttime = time_now();
     uint64_t lasttime_pid = time_now();
     uint64_t sec = 100000000;
-    
+
     controller pid = {1, 0.1, 0, 0, 0, 0.0, 0.01};
-                    // kp ki r u y integralterm dt;
+    // kp ki r u y integralterm dt;
     while (1)
     {
-    
+
         can_decipher_msg(&joystick, &slider);
         encoder_data = update_encoder();
         update_servo(joystick.y);
 
-        if(time_now() - lasttime > 1*sec){
+        if (time_now() - lasttime > 1 * sec)
+        {
             printf("encoder: %i\r\n", encoder_data);
             printf("pid.u: %i\r\n", pid.u);
             printf("pid.r: %i\r\n", pid.r);
             printf("pid.y: %i\r\n", pid.y);
             printf("pid.int: %f\r\n", pid.integralterm);
+            printf("score: %i\n\r", score);
             lasttime = time_now();
         }
-    if(time_now() - lasttime_pid > pid.dt*sec){
+        if (time_now() - lasttime_pid > pid.dt * sec)
+        {
             pid.y = encoder_data;
-            pid.r = joystick.x;
+            pid.r = 100 - joystick.x;
             pid.u = pid_output(&pid);
             update_motor(pid.u);
             lasttime_pid = time_now();
         }
-
-
-
-    //     get_irsensor(&score, &ball_detected_flag);
-
-    //     printf("score: %i\n\r", score);
-
-
-    //     printf("\033[H");
-    //     printf("joystick        \n\rx: %i   \n\ry: %i       \n\rdir: %i     \n\rslider      \n\rleft: %i        \n\rright: %i      \r\n", joystick.x, joystick.y, joystick.direction, slider.left, slider.right);
-    //    // update_servo(140);
-        //time_spinFor(msecs(500));
-        
-        //update_servo(40);
-        //time_spinFor(msecs(500));
-
+        get_score(&score, &ball_detected_flag);
+        if(last_score != score){
+            can_i_send_score(score);
+            last_score = score;
+        }
+        //     printf("\033[H");
+        //     printf("joystick        \n\rx: %i   \n\ry: %i       \n\rdir: %i     \n\rslider      \n\rleft: %i        \n\rright: %i      \r\n", joystick.x, joystick.y, joystick.direction, slider.left, slider.right);
     }
 }

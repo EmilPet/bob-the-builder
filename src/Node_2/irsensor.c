@@ -17,18 +17,22 @@ void adc_init(){
     ADC->ADC_CR = ADC_CR_START;
 }
 
-void get_irsensor(int* score, int* ball_detected_flag){
+int get_irsensor(){
     while(!(ADC->ADC_ISR&ADC_ISR_DRDY)){
         //printf("ISR: %x\r\n", ADC->ADC_ISR);
         //time_spinFor(msecs(100));
     }
-    int data = ADC->ADC_LCDR;
-    //printf("data: %i\r\n", data);
-    //int data_2 = ADC->ADC_CDR[13];
-    //printf("ir sensor: %i \n\r",data);
-    if(data < 1000){
-        ;
-        if(!*ball_detected_flag){
+    return ADC->ADC_LCDR;
+
+}
+
+void get_score(int* score, int* ball_detected_flag){
+
+    int ir_sensor = get_irsensor();
+    if(ir_sensor < 500){
+        time_spinFor(msecs(10));
+        ir_sensor = get_irsensor();
+        if(!*ball_detected_flag && ir_sensor < 500){
             (*score) += 1;
             *ball_detected_flag = 1;
         }

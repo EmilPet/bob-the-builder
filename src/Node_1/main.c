@@ -42,8 +42,10 @@ int main(void)
 	port_init();
 	Uart_init(baud_rate);
 	SRAM_init();
-	//oled_init();
-	//oled_clear();
+	_delay_ms(100);
+	oled_init();
+	_delay_ms(100);
+	oled_clear();
 	mcp_Init();	
 	sei();
 	printf("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_\n");
@@ -54,20 +56,12 @@ int main(void)
 	const uint8_t data_msg[8] = {0xAA, 0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 	can_message send_frame = {.id = 0x00B, .data_length=8, .data = data_msg};
  	_delay_ms(1000);
- 	
- 	can_write(send_frame);
- 	_delay_ms(1000);
+	 
 	
 	//printf("Error codes: %x\n", mcp_read(EFLG));
+	menu_loop();
+
 	
-	
-	while (1)
-	{
-		can_write(send_frame);
-		
-	}
-	
-	//menu_loop();
 	
 }
 

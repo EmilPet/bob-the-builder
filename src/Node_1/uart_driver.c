@@ -27,14 +27,14 @@ void Uart_init(unsigned int baud_rate){
 	clear_bit(UCSR0B, 6); // Disable TX complete interrupt
 	clear_bit(UCSR0B, 5); // Disable TX buffer available interrupt
 	set_bit(UCSR0B, 4);   // Enable RX
-	set_bit(UCSR0B, 3);   // Enable TX 
+	set_bit(UCSR0B, 3);   // Enable TX
 	clear_bit(UCSR0B, 2); // Part of RX, TX character size
 	clear_bit(UCSR0B, 1); // 9-bit character disable
 	clear_bit(UCSR0B, 0); // 9-bit character disable
 
 	// Manipulate UCSRC control register
 	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);//|(1<<UCSZ01);
-	// Settings: No parity, 8-bit words, 2 stop bits, 
+	// Settings: No parity, 8-bit words, 2 stop bits,
 	
 	// Enable interrupts
 	//sei();

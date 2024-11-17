@@ -6,7 +6,7 @@
 //    - Write to remote with Print_UART
 //    - Deal with input from remote in ISR
 
-#define F_CPU 4915200 // Clock 
+#define F_CPU 4915200 // Clock
 
 #include <stdbool.h>
 #include <avr/interrupt.h>

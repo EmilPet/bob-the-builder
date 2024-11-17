@@ -57,7 +57,8 @@ struct Byte8 {
 //        uint8_t   b;
 //        float     c;
 //    } __attribute__((packed)) YourStruct ;
-//    
+//    t can_rx(CanMsg* m);
+
 //    CanMsg m = (CanMsg){
 //        .id = 1,
 //        .length = sizeof(YourStruct),
@@ -80,6 +81,20 @@ struct CanMsg {
     };    
 };
 
+typedef struct
+{
+    uint8_t x;
+    uint8_t y;
+    enum Direction {UP, DOWN, LEFT, RIGHT, NEUTRAL};
+    enum Direction direction;
+}joystick;
+
+typedef struct
+{
+    uint8_t left;
+    uint8_t right;
+} slider;
+
 // Send a CAN message on the bus. 
 // Blocks if the bus does not receive the message (typically because one of the 
 // receiving nodes has not cleared a buffer)
@@ -91,6 +106,8 @@ uint8_t can_rx(CanMsg* m);
 
 // Print a CAN message (using `printf`)
 void can_printmsg(CanMsg m);
+
+void can_decipher_msg(joystick* joystick, slider* slider);
 
 
 
